@@ -59,6 +59,7 @@
             border-radius: 5px;
             font-weight: bold;
             transition: background-color 0.3s ease;
+            cursor: pointer;
         }
 
         .shop-btn:hover {
@@ -76,66 +77,110 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        @media (max-width: 768px) {
-            .box1 {
-                padding: 20px;
-            }
-            .box {
-                padding: 15px;
-            }
-            .box h3 {
-                font-size: 1em;
-            }
+        .cart-summary {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+        .cart-summary h4 {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="box1">
-        <div class="box">
+        <!-- Product Boxes -->
+        <div class="box" data-name="Cruz Sectional" data-price="499">
             <img src="https://embed.widencdn.net/img/cityfurniture/qts19uzorq/1920px/MAR11961-5024-1213-CruzSectionall-HP-ECB-XLG.webp?q=72" alt="Cruz Sectional">
             <h3>Cruz Sectional $499, <strike>$999</strike></h3>
-            <button class="shop-btn" onclick="redirectTo('payment.html')">Get Now</button>
+            <button class="shop-btn" onclick="addToCart(this)">Add to Cart</button>
         </div>
-        <div class="box">
+        <div class="box" data-name="Palermo Bed" data-price="799">
             <img src="https://embed.widencdn.net/img/cityfurniture/aefvbx1wai/1080px/MAR11961-5024-1213-PalermoBed-HP-ECB-XLG.webp?q=72" alt="Palermo Bed">
             <h3>Palermo Bed $799, <strike>$999</strike></h3>
-            <button class="shop-btn" onclick="redirectTo('payment.html')">Get Now</button>
+            <button class="shop-btn" onclick="addToCart(this)">Add to Cart</button>
         </div>
-        <div class="box">
+        <div class="box" data-name="Fremont Table" data-price="199">
             <img src="https://embed.widencdn.net/img/cityfurniture/p6xm74ywnt/1080px/FREMONT_ECB.webp?q=72" alt="Fremont Table">
             <h3>Fremont Table $199, <strike>$299</strike></h3>
-            <button class="shop-btn" onclick="redirectTo('payment.html')">Get Now</button>
+            <button class="shop-btn" onclick="addToCart(this)">Add to Cart</button>
         </div>
-        <div class="box">
+        <div class="box" data-name="Nomad Bed" data-price="699">
             <img src="https://embed.widencdn.net/img/cityfurniture/naax6ejrma/1080px/MAR11961-5024-1213-NomadBed-HP-ECB-XLG.webp?q=72" alt="Nomad Bed">
             <h3>Nomad Bed $699, <strike>$799</strike></h3>
-            <button class="shop-btn" onclick="redirectTo('payment.html')">Get Now</button>
+            <button class="shop-btn" onclick="addToCart(this)">Add to Cart</button>
         </div>
-        <div class="box">
+        <div class="box" data-name="Easton Sectional" data-price="899">
             <img src="https://embed.widencdn.net/img/cityfurniture/gqlnjtiy2j/1080px/MAR11961-5024-1213-EastonSectional-HP-ECB-XLG.webp?q=72" alt="Easton Sectional">
             <h3>Easton Sectional $899, <strike>$999</strike></h3>
-            <button class="shop-btn" onclick="redirectTo('payment.html')">Get Now</button>
+            <button class="shop-btn" onclick="addToCart(this)">Add to Cart</button>
         </div>
-        <div class="box">
+        <div class="box" data-name="Savannah Table" data-price="899">
             <img src="https://embed.widencdn.net/img/cityfurniture/m3g0cb2wav/1920px/SAVANNAH_ECB.webp?q=72" alt="Savannah Table">
             <h3>Savannah Table $899, <strike>$999</strike></h3>
-            <button class="shop-btn" onclick="redirectTo('payment.html')">Get Now</button>
+            <button class="shop-btn" onclick="addToCart(this)">Add to Cart</button>
         </div>
-        <div class="box">
+        <div class="box" data-name="Indie Sofa" data-price="499">
             <img src="https://embed.widencdn.net/img/cityfurniture/bwe0xavdmo/1080px/MAR11961-5024-1213-IndieSofa-HP-ECB-XLG.webp?q=72" alt="Indie Sofa">
             <h3>Indie Sofa $499, <strike>$599</strike></h3>
-            <button class="shop-btn" onclick="redirectTo('payment.html')">Get Now</button>
+            <button class="shop-btn" onclick="addToCart(this)">Add to Cart</button>
         </div>
-        <div class="box">
+        <div class="box" data-name="Merrick Table" data-price="399">
             <img src="https://embed.widencdn.net/img/cityfurniture/lfsjj8rp9e/1080px/MERRICK_ECB.webp?q=72" alt="Merrick Table">
             <h3>Merrick Table $399, <strike>$499</strike></h3>
-            <button class="shop-btn" onclick="redirectTo('payment.html')">Get Now</button>
+            <button class="shop-btn" onclick="addToCart(this)">Add to Cart</button>
         </div>
     </div>
-    <hr>
-    <button class="order-button" onclick="redirectTo('rent.html')">Back</button>
+
+    <!-- Cart Summary Section -->
+    <div class="cart-summary">
+        <h4>Selected Products</h4>
+        <ul id="cart-items"></ul>
+        <p id="total-price">Total: $0.00</p>
+        <p id="discount-price">Discount Price (10% off): $0.00</p>
+        <button class="order-button" onclick="redirectTo('payment.html')">Proceed to Payment</button>
+    </div>
 
     <script>
+        let cart = [];
+
+        // Add product to cart
+        function addToCart(button) {
+            let box = button.closest('.box');
+            let name = box.getAttribute('data-name');
+            let price = parseFloat(box.getAttribute('data-price'));
+            
+            // Add product to cart
+            cart.push({ name, price });
+
+            updateCart();
+        }
+
+        // Update cart and calculate total
+        function updateCart() {
+            let cartItems = document.getElementById('cart-items');
+            let totalPrice = 0;
+
+            // Clear the cart display
+            cartItems.innerHTML = '';
+
+            // Add each product to the cart display
+            cart.forEach(item => {
+                let li = document.createElement('li');
+                li.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+                cartItems.appendChild(li);
+                totalPrice += item.price;
+            });
+
+            // Apply discount
+            let discountPrice = totalPrice * 0.90;
+
+            // Update the total price and discount price
+            document.getElementById('total-price').textContent = `Total: $${totalPrice.toFixed(2)}`;
+            document.getElementById('discount-price').textContent = `Discount Price (10% off): $${discountPrice.toFixed(2)}`;
+        }
         function redirectTo(url) {
             window.location.href = url;
         }
