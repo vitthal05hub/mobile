@@ -217,7 +217,7 @@
 
             const validations = [
                 { isValid: validateRequired(newUsername.value), errorElement: usernameError, message: 'Username is required.' },
-                { isValid: validateMinLength(newUsername.value, 3), errorElement: usernameError, message: 'Username must be at least 3 characters.' },
+                { isValid: validateMinLength(newUsername.value, 2), errorElement: usernameError, message: 'Username must be at least 3 characters.' },
                 { isValid: validateRequired(email.value), errorElement: emailError, message: 'Email is required.' },
                 { isValid: validateEmail(email.value), errorElement: emailError, message: 'Invalid email format.' },
                 { isValid: validateRequired(createPassword.value), errorElement: createPasswordError, message: 'Password is required.' },
